@@ -46,6 +46,17 @@
 
 ### 📥 Installation
 
+#### Option 1: Download Standalone Executable (Recommended)
+
+You can download the pre-compiled, standalone Windows executable directly from GitHub Releases. No Python or command-line experience required!
+
+1. Go to the [Releases](https://github.com/piotr4256/ecoute-ai-copilot/releases) page.
+2. Download the latest `Ecoute-AI-Copilot.exe`.
+3. Double-click the `.exe` to run the application.
+4. On first startup, a window will pop up asking for your API Key. Enter your Groq/Gemini key, and you're ready to go! The key is saved securely in your Windows AppData folder and can be edited anytime via the `🔑 API Keys` button in the app.
+
+#### Option 2: Build from Source (For Developers)
+
 1. **Clone your fork**:
    ```bash
    git clone https://github.com/piotr4256/ecoute-ai-copilot.git
