@@ -1,108 +1,102 @@
+# 🎧 Ecoute - Real-time AI Copilot & Transcriber (Enhanced Fork)
 
-# 🎧 Ecoute
+> **Fork & Attribution Disclaimer**  
+> This repository is an enhanced fork of the original open-source project **[Ecoute](https://github.com/SevaSk/ecoute)** created by **[Seva Skvortsov (@SevaSk)](https://github.com/SevaSk)** and **[Daniel Zarifpour (@zarifpour)](https://github.com/zarifpour)**.  
+> All credit for the core concept, initial architecture, and base transcription engine belongs to the original authors. This fork introduces custom enhancements for real-time AI copilot responses, multi-provider LLM support, dynamic response modes, multilingual speech recognition with language selection, and secure environment configuration.
 
-Ecoute is a live transcription tool that provides real-time transcripts for both the user's microphone input (You) and the user's speakers output (Speaker) in a textbox.
+---
 
-## Sponsored By: Recall.ai - Meeting Transcription API
+## What's New in this Enhanced Fork
 
-If you’re working with speech detection or transcription for meetings, consider checking out [Recall.ai](https://www.recall.ai/product/meeting-transcription-api/?utm_source=github&utm_medium=sponsorship&utm_campaign=sevask-ecoute), an API that works with Zoom, Google Meet, Microsoft Teams, and more. Recall.ai diarizes by pulling the speaker data and separate audio streams from the meeting platforms, which means 100% accurate speaker diarization with actual speaker names and speaker emails.
+- **Multi-Provider AI Copilot**: Native integration with **Groq** (`llama-3.3-70b-versatile`), **Gemini** (`gemini-flash-lite-latest`), and **OpenAI** (`gpt-4o-mini`).
+- **Multilingual Speech Recognition & Speech Language Selector**: Upgraded local Whisper engine from English-only (`tiny.en`) to multilingual models (`base`). Added a live `Speech Language` dropdown in the UI (`Auto-Detect`, `Polish (pl)`, `English (en)`, `German (de)`, `Spanish (es)`, `French (fr)`, `Italian (it)`, `Ukrainian (uk)`).
+- **Automatic Language Matching AI**: The AI Copilot detects the language of the conversation in real-time and generates suggestions in the **exact same language**.
+- **Dynamic AI Response Modes**:
+  - **`Manual Mode (Default)`**: AI suggestions fire strictly when clicking the `Generate Response Suggestion Now` button.
+  - **`Automatic Mode`**: AI suggestions trigger automatically whenever the interlocutor (`Speaker`) finishes speaking.
+- **Secure `.env` Secret Management**: All API keys are isolated in `.env` (ignored by Git) with a public `.env.example` template for safe GitHub deployment.
+- **Python 3.13 / 3.14 Compatibility**: Fully compatible with PEP 594 Python releases using `audioop-lts`.
 
-## 📖 Demo
+---
 
-https://github.com/user-attachments/assets/5616421f-838d-439f-8b15-0df7b8d33459
+## Original Authors & Attribution
 
-Ecoute is designed to help users in their conversations by providing live transcriptions.
+- **Original Repository**: [https://github.com/SevaSk/ecoute](https://github.com/SevaSk/ecoute)
+- **Original Contributors**:
+  - **Seva Skvortsov** ([@SevaSk](https://github.com/SevaSk))
+  - **Daniel Zarifpour** ([@zarifpour](https://github.com/zarifpour))
+
+---
+
+## Core Features
+
+- **Real-Time Dual Audio Transcription**: Captures microphone input (**You**) and system speaker audio (**Speaker**) simultaneously using `Faster-Whisper` or Cloud APIs.
+- **Live AI Copilot**: Provides smart, context-aware response suggestions (1-3 sentences) tailored to the conversation history.
+- **Modern Dark Interface**: CustomTkinter dark GUI with dedicated live transcript, settings bar, and response suggestion panels.
+
+---
 
 ## 🚀 Getting Started
 
-Follow these steps to set up and run Ecoute on your local machine.
-
 ### 📋 Prerequisites
 
-- Python >=3.8.0
-- (Optional) An OpenAI API key that can access Whisper API (set up a paid account OpenAI account)
-- Windows OS (Not tested on others)
-- FFmpeg 
+- **Python**: 3.10 to 3.13+
+- **FFmpeg**: Installed on your system and added to PATH (or installed via WinGet `winget install FFmpeg`).
+- **NVIDIA GPU (Optional)**: CUDA-enabled GPU for faster local Whisper transcription.
 
-If FFmpeg is not installed in your system, you can follow the steps below to install it.
+### 📥 Installation
 
-First, you need to install Chocolatey, a package manager for Windows. Open your PowerShell as Administrator and run the following command:
-```
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-```
-Once Chocolatey is installed, you can install FFmpeg by running the following command in your PowerShell:
-```
-choco install ffmpeg
-```
-Please ensure that you run these commands in a PowerShell window with administrator privileges. If you face any issues during the installation, you can visit the official Chocolatey and FFmpeg websites for troubleshooting.
-
-### 🔧 Installation
-
-1. Clone the repository:
-
-   ```
-   git clone https://github.com/SevaSk/ecoute
+1. **Clone your fork**:
+   ```bash
+   git clone https://github.com/piotr4256/ecoute-ai-copilot.git
+   cd ecoute-ai-copilot
    ```
 
-2. Navigate to the `ecoute` folder:
-
-   ```
-   cd ecoute
-   ```
-
-3. Install the required packages:
-
-   ```
+2. **Install dependencies**:
+   ```bash
    pip install -r requirements.txt
    ```
-   
-4. (Optional) Create a `keys.py` file in the ecoute directory and add your OpenAI API key:
 
-   - Option 1: You can utilize a command on your command prompt. Run the following command, ensuring to replace "API KEY" with your actual OpenAI API key:
+3. **Configure Environment Variables (`.env`)**:
+   Copy `.env.example` to `.env` and enter your API keys:
+   ```bash
+   cp .env.example .env
+   ```
 
-      ```
-      python -c "with open('keys.py', 'w', encoding='utf-8') as f: f.write('OPENAI_API_KEY=\"API KEY\"')"
-      ```
+   Edit `.env`:
+   ```env
+   GROQ_API_KEY=gsk_your_actual_groq_api_key_here
+   GEMINI_API_KEY=your_gemini_api_key_here
+   OPENAI_API_KEY=your_openai_api_key_here
+   ```
 
-   - Option 2: You can create the keys.py file manually. Open up your text editor of choice and enter the following content:
-   
-      ```
-      OPENAI_API_KEY="API KEY"
-      ```
-      Replace "API KEY" with your actual OpenAI API key. Save this file as keys.py within the ecoute directory.
+---
 
-### 🎬 Running Ecoute
+## 🏃 Running the Application
 
-Run the main script:
-
-```
+### 1. Standard Local Execution (Recommended - Groq AI + Local Multilingual Whisper)
+```bash
 python main.py
 ```
 
-For a more better and faster version that also works with most languages, use:
-
-```
+### 2. Cloud Whisper API Mode
+```bash
 python main.py --api
 ```
 
-Upon initiation, Ecoute will begin transcribing your microphone input and speaker output in real-time. Please note that it might take a few seconds for the system to warm up before the transcription becomes real-time.
+### 3. Gemini Audio Model Mode
+```bash
+python main.py --gemini
+```
 
-The --api flag will use the whisper api for transcriptions. This significantly enhances transcription speed and accuracy, and it works in most languages (rather than just English without the flag). It's expected to become the default option in future releases. However, keep in mind that using the Whisper API will consume more OpenAI credits than using the local model. This increased cost is attributed to the advanced features and capabilities that the Whisper API provides. Despite the additional expense, the substantial improvements in speed and transcription accuracy may make it a worthwhile investment for your use case.
+---
 
-### ⚠️ Limitations
+## 🔒 Security Notice
 
-While Ecoute provides real-time transcription and response suggestions, there are several known limitations to its functionality that you should be aware of:
+The `.env` file is excluded from Git version control via `.gitignore`. Never commit your real API keys to public repositories!
 
-**Default Mic and Speaker:** Ecoute is currently configured to listen only to the default microphone and speaker set in your system. It will not detect sound from other devices or systems. If you wish to use a different mic or speaker, you will need to set it as your default device in your system settings.
+---
 
-**Whisper Model**: If the --api flag is not used, we utilize the 'tiny' version of the Whisper ASR model, due to its low resource consumption and fast response times. However, this model may not be as accurate as the larger models in transcribing certain types of speech, including accents or uncommon words.
+## 📄 License
 
-**Language**: If you are not using the --api flag the Whisper model used in Ecoute is set to English. As a result, it may not accurately transcribe non-English languages or dialects. We are actively working to add multi-language support to future versions of the program.
-
-## 📖 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🤝 Contributing
-
-Contributions are welcome! Feel free to open issues or submit pull requests to improve Ecoute.
+This project carries the license of the original [Ecoute](https://github.com/SevaSk/ecoute) repository.

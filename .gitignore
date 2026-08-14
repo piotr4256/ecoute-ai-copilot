@@ -1,4 +1,6 @@
 __pycache__/
 *.wav
 keys.py
+.env
+.env.local
 .venv/

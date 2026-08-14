@@ -8,9 +8,18 @@ import tempfile
 import sys
 import subprocess
 import wave
-import aifc
+try:
+    import aifc
+except ImportError:
+    aifc = None
 import math
-import audioop
+try:
+    import audioop
+except ImportError:
+    try:
+        import audioop_lts as audioop
+    except ImportError:
+        audioop = None
 import collections
 import json
 import base64

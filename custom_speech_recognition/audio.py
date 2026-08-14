@@ -1,5 +1,14 @@
-import aifc
-import audioop
+try:
+    import aifc
+except ImportError:
+    aifc = None
+try:
+    import audioop
+except ImportError:
+    try:
+        import audioop_lts as audioop
+    except ImportError:
+        audioop = None
 import io
 import os
 import platform

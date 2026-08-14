@@ -16,6 +16,8 @@ class AudioTranscriber:
         self.transcript_data = {"You": [], "Speaker": []}
         self.transcript_changed_event = threading.Event()
         self.audio_model = model
+        self.new_speaker_spoke = False
+        self.language = "auto"
         self.audio_sources = {
             "You": {
                 "sample_rate": mic_source.SAMPLE_RATE,
@@ -36,6 +38,17 @@ class AudioTranscriber:
                 "process_data_func": self.process_speaker_data
             }
         }
+
+    def set_language(self, language_code):
+        """Updates the speech recognition target language (e.g., 'auto', 'pl', 'en', 'de', 'es')."""
+        self.language = language_code
+        print(f"[INFO] Speech recognition language set to: '{self.language}'")
+
+    def check_and_reset_speaker_spoke(self):
+        if self.new_speaker_spoke:
+            self.new_speaker_spoke = False
+            return True
+        return False
 
     def transcribe_audio_queue(self, speaker_queue, mic_queue):
         import queue
@@ -67,7 +80,7 @@ class AudioTranscriber:
                     fd, path = tempfile.mkstemp(suffix=".wav")
                     os.close(fd)
                     source_info["process_data_func"](source_info["last_sample"], path)
-                    text = self.audio_model.get_transcription(path)
+                    text = self.audio_model.get_transcription(path, language=self.language)
                     if text != '' and text.lower() != 'you':
                         latest_time = max(time for _, time in mic_data)
                         pending_transcriptions.append(("You", text, latest_time))
@@ -82,7 +95,7 @@ class AudioTranscriber:
                     fd, path = tempfile.mkstemp(suffix=".wav")
                     os.close(fd)
                     source_info["process_data_func"](source_info["last_sample"], path)
-                    text = self.audio_model.get_transcription(path)
+                    text = self.audio_model.get_transcription(path, language=self.language)
                     if text != '' and text.lower() != 'you':
                         latest_time = max(time for _, time in speaker_data)
                         pending_transcriptions.append(("Speaker", text, latest_time))
@@ -95,6 +108,8 @@ class AudioTranscriber:
                 pending_transcriptions.sort(key=lambda x: x[2])
                 for who_spoke, text, time_spoken in pending_transcriptions:
                     self.update_transcript(who_spoke, text, time_spoken)
+                    if who_spoke == "Speaker":
+                        self.new_speaker_spoke = True
                 
                 self.transcript_changed_event.set()
             
